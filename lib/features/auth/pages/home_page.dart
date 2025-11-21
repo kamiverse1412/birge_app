@@ -1,23 +1,71 @@
-import 'package:birge_app/features/auth/pages/auth_page_route.dart';
-import 'package:birge_app/features/auth/pages/login_page.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class AIHomePage extends StatelessWidget {
   const AIHomePage({Key? key}) : super(key: key);
 
   @override
+  State<AIHomePage> createState() => _AIHomePageState();
+}
+
+class _AIHomePageState extends State<AIHomePage> {
+  String selectedCategory = 'Бәрі';
+
+  // your categorized services (unchanged)
+  final Map<String, List<AIService>> categorizedServices = {
+    'Білім': [
+      AIService('NotebookLM', 'assets/notebooklm.png', 'Зерттеу көмекшісі'),
+      AIService('Gradescope', 'assets/gradescope.png', 'Бағалау жүйесі'),
+      AIService('Eduaide', 'assets/eduaide.png', 'Білім көмекшісі'),
+      AIService('QuestionWell', 'assets/questionwell.png', 'Сұрақ жинағы'),
+    ],
+    'Мұзыка': [
+      AIService('AIVA', 'assets/aiva.png', 'AI музыка композитор'),
+      AIService('Suno', 'assets/suno.png', 'Музыка жасау'),
+      AIService('Boomy', 'assets/boomy.png', 'Тренд музыка жасау'),
+    ],
+    'Контент': [
+      AIService('ChatGPT', 'assets/chatgpt.png', 'Білім беру контенті'),
+      AIService('Copy', 'assets/copy.png', 'AI жазу көмекшісі'),
+      AIService('Writesonic', 'assets/writesonic.png', 'AI контент жасау'),
+    ],
+    'Денсаулық': [
+      AIService('PathAI', 'assets/pathai.png', 'Жасанды интеллект'),
+      AIService('Aidence', 'assets/aidence.png', 'Денсаулық диагностикасы'),
+      AIService('DeepScribe', 'assets/deepscribe.png', 'Медициналық транскрип'),
+    ],
+  };
+
+  // <-- Put the local image path you gave here:
+  final String robotImageFilePath =
+      '/Users/kamila/Desktop/BIRGE/birge_app/6d68ee56925c4b1b52025305c1172c68b494a078.png';
+
+  @override
   Widget build(BuildContext context) {
+    // To match Figma's airy layout, use a white scaffold and large paddings
     return Scaffold(
       backgroundColor: Colors.white,
+      // AppBar: minimal with back button only (no title)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Жаңа әңгіме үшін 😊',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+        toolbarHeight: 50,
+        automaticallyImplyLeading: false,
+        flexibleSpace: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                const SizedBox(width: 1),
+                const SizedBox(width: 48),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -234,15 +282,17 @@ class AIHomePage extends StatelessWidget {
           ),
         ),
       ),
+
+      // bottom navigation (kept)
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 22),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withOpacity(0.06),
               spreadRadius: 1,
-              blurRadius: 10,
+              blurRadius: 8,
             ),
           ],
         ),
@@ -287,22 +337,35 @@ class AIHomePage extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
+
         ),
         const Icon(Icons.arrow_forward_ios, size: 16),
       ],
     );
   }
 
-  Widget _buildAIGrid(BuildContext context, List<AIService> services) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 0.85,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+
+  Widget _buildHorizontalAIList(List<AIService> services) {
+    return SizedBox(
+      height: 150,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: services.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.only(
+              right: index < services.length - 1 ? 12 : 0,
+            ),
+            child: _buildAICard(services[index]),
+          );
+        },
+
       ),
       itemCount: services.length,
       itemBuilder: (context, index) {
@@ -313,10 +376,16 @@ class AIHomePage extends StatelessWidget {
 
   Widget _buildAICard(BuildContext context, AIService service) {
     return Container(
+
+      width: 110,
+
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.01), blurRadius: 6),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -325,18 +394,19 @@ class AIHomePage extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: Colors.grey.shade100,
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.smart_toy_outlined, color: Colors.grey),
           ),
           const SizedBox(height: 8),
+
           Text(
             service.name,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+
           ),
           const SizedBox(height: 4),
           Padding(
@@ -351,10 +421,10 @@ class AIHomePage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Container(
-            width: 32,
-            height: 32,
-            decoration: const BoxDecoration(
-              color: Colors.blue,
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: const Color(0xFF0A73FF),
               shape: BoxShape.circle,
             ),
             child: IconButton(
@@ -376,13 +446,20 @@ class AIHomePage extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: isActive ? Colors.blue : Colors.grey, size: 28),
+        Icon(
+          icon,
+          color: isActive ? const Color(0xFF0A73FF) : Colors.grey,
+          size: 26,
+        ),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
             fontSize: 11,
-            color: isActive ? Colors.blue : Colors.grey,
+
+
+            color: isActive ? const Color(0xFF0A73FF) : Colors.grey,
+            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
       ],
