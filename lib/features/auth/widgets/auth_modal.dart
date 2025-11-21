@@ -1,44 +1,63 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_colors.dart';
-import 'package:birge_app/features/auth/pages/home_page.dart';
 
 class AuthModal extends StatelessWidget {
   final bool isLogin;
   final VoidCallback onToggleMode;
   final VoidCallback? onClose;
+  final TextEditingController? firstNameController;
+  final TextEditingController? lastNameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController? confirmPasswordController;
+  final TextEditingController? birthDateController;
+  final TextEditingController? phoneController;
   final bool rememberMe;
   final ValueChanged<bool>? onRememberMeChanged;
   final VoidCallback onPrimaryAction;
   final VoidCallback onGoogleSignIn;
   final VoidCallback? onForgotPassword;
+  final VoidCallback? onBirthDateTap;
 
   const AuthModal({
     super.key,
     required this.isLogin,
     required this.onToggleMode,
     this.onClose,
+    this.firstNameController,
+    this.lastNameController,
     required this.emailController,
     required this.passwordController,
     this.confirmPasswordController,
+    this.birthDateController,
+    this.phoneController,
     this.rememberMe = false,
     this.onRememberMeChanged,
     required this.onPrimaryAction,
     required this.onGoogleSignIn,
     this.onForgotPassword,
+    this.onBirthDateTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final closeAction = onClose ?? () => Navigator.of(context).maybePop();
+
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.modalBackground,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(28),
           topRight: Radius.circular(28),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -69,14 +88,14 @@ class AuthModal extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (onClose != null)
-                  IconButton(
-                    onPressed: onClose,
-                    icon: const Icon(
-                      Icons.close,
-                      color: AppColors.textOnDarkSecondary,
-                    ),
+                IconButton(
+                  splashRadius: 20,
+                  onPressed: closeAction,
+                  icon: const Icon(
+                    Icons.close,
+                    color: AppColors.textOnDarkSecondary,
                   ),
+                ),
               ],
             ),
 
@@ -85,7 +104,7 @@ class AuthModal extends StatelessWidget {
             // Tabs
             Container(
               decoration: BoxDecoration(
-                color: AppColors.modalSurface,
+                color: const Color(0xFFF2F2F7),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
@@ -97,8 +116,16 @@ class AuthModal extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
-                          color:
-                              isLogin ? Colors.white : Colors.transparent,
+                          color: isLogin ? Colors.white : Colors.transparent,
+                          boxShadow: isLogin
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : null,
                         ),
                         child: Text(
                           'Кіру',
@@ -107,7 +134,7 @@ class AuthModal extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: isLogin
-                                ? AppColors.modalBackground
+                                ? AppColors.textOnDarkPrimary
                                 : AppColors.textOnDarkSecondary,
                           ),
                         ),
@@ -121,8 +148,16 @@ class AuthModal extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
-                          color:
-                              !isLogin ? Colors.white : Colors.transparent,
+                          color: !isLogin ? Colors.white : Colors.transparent,
+                          boxShadow: !isLogin
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : null,
                         ),
                         child: Text(
                           'Тіркелу',
@@ -131,7 +166,7 @@ class AuthModal extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: !isLogin
-                                ? AppColors.modalBackground
+                                ? AppColors.textOnDarkPrimary
                                 : AppColors.textOnDarkSecondary,
                           ),
                         ),
@@ -147,6 +182,23 @@ class AuthModal extends StatelessWidget {
             // Form fields
             Column(
               children: [
+                if (!isLogin && firstNameController != null) ...[
+                  _buildLabel('Есім'),
+                  _buildTextField(
+                    controller: firstNameController!,
+                    keyboardType: TextInputType.name,
+                  ),
+                  const SizedBox(height: 20),
+                ],
+                if (!isLogin && lastNameController != null) ...[
+                  _buildLabel('Тегі'),
+                  _buildTextField(
+                    controller: lastNameController!,
+                    keyboardType: TextInputType.name,
+                  ),
+                  const SizedBox(height: 20),
+                ],
+
                 _buildLabel('Электронды пошта'),
                 _buildTextField(
                   controller: emailController,
@@ -154,6 +206,52 @@ class AuthModal extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 20),
+
+                if (!isLogin && birthDateController != null) ...[
+                  _buildLabel('Туған күн'),
+                  _buildTextField(
+                    controller: birthDateController!,
+                    readOnly: true,
+                    onTap: onBirthDateTap,
+                    suffix: IconButton(
+                      onPressed: onBirthDateTap,
+                      icon: const Icon(
+                        Icons.calendar_today_outlined,
+                        color: AppColors.textOnDarkSecondary,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+
+                if (!isLogin && phoneController != null) ...[
+                  _buildLabel('Телефон номер'),
+                  _buildTextField(
+                    controller: phoneController!,
+                    keyboardType: TextInputType.phone,
+                    prefix: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          right: BorderSide(color: AppColors.modalDivider),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text('🇰🇿', style: TextStyle(fontSize: 16)),
+                          SizedBox(width: 6),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: AppColors.textOnDarkSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
 
                 _buildLabel('Құпиясөз'),
                 _buildTextField(
@@ -191,19 +289,19 @@ class AuthModal extends StatelessWidget {
                                   onRememberMeChanged!(value);
                                 }
                               },
-                              checkColor: AppColors.modalBackground,
+                              activeColor: AppColors.primary,
+                              checkColor: Colors.white,
                               side: const BorderSide(
                                 color: AppColors.textOnDarkSecondary,
                               ),
-                              fillColor: MaterialStateProperty.resolveWith(
-                                (states) {
-                                  if (states
-                                      .contains(MaterialState.selected)) {
-                                    return Colors.white;
-                                  }
-                                  return Colors.transparent;
-                                },
-                              ),
+                              fillColor: MaterialStateProperty.resolveWith((
+                                states,
+                              ) {
+                                if (states.contains(MaterialState.selected)) {
+                                  return AppColors.primary;
+                                }
+                                return Colors.transparent;
+                              }),
                             ),
                           ),
                           const Text(
@@ -237,8 +335,8 @@ class AuthModal extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: onPrimaryAction,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.modalBackground,
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -257,11 +355,7 @@ class AuthModal extends StatelessWidget {
                 // Separator
                 const Row(
                   children: [
-                    Expanded(
-                      child: Divider(
-                        color: AppColors.modalDivider,
-                      ),
-                    ),
+                    Expanded(child: Divider(color: AppColors.modalDivider)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
@@ -272,11 +366,7 @@ class AuthModal extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Divider(
-                        color: AppColors.modalDivider,
-                      ),
-                    ),
+                    Expanded(child: Divider(color: AppColors.modalDivider)),
                   ],
                 ),
 
@@ -293,7 +383,7 @@ class AuthModal extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       side: const BorderSide(color: AppColors.modalDivider),
-                      backgroundColor: AppColors.modalSurface,
+                      backgroundColor: Colors.white,
                       foregroundColor: AppColors.textOnDarkPrimary,
                       textStyle: const TextStyle(
                         fontSize: 16,
@@ -356,19 +446,22 @@ class AuthModal extends StatelessWidget {
     bool obscureText = false,
     TextInputType? keyboardType,
     bool showVisibilityToggle = false,
+    bool readOnly = false,
+    VoidCallback? onTap,
+    Widget? prefix,
+    Widget? suffix,
   }) {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
-      style: const TextStyle(
-        color: AppColors.textOnDarkPrimary,
-        fontSize: 15,
-      ),
-      cursorColor: Colors.white70,
+      readOnly: readOnly,
+      onTap: onTap,
+      style: const TextStyle(color: AppColors.textOnDarkPrimary, fontSize: 15),
+      cursorColor: AppColors.primary,
       decoration: InputDecoration(
         filled: true,
-        fillColor: AppColors.modalSurface,
+        fillColor: Colors.white,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.modalDivider),
@@ -381,6 +474,13 @@ class AuthModal extends StatelessWidget {
           horizontal: 16,
           vertical: 16,
         ),
+        prefixIcon: prefix != null
+            ? Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: prefix,
+              )
+            : null,
+        prefixIconConstraints: const BoxConstraints(minHeight: 0, minWidth: 0),
         suffixIcon: showVisibilityToggle
             ? IconButton(
                 onPressed: () {},
@@ -389,9 +489,8 @@ class AuthModal extends StatelessWidget {
                   color: AppColors.textOnDarkSecondary,
                 ),
               )
-            : null,
+            : suffix,
       ),
     );
   }
 }
-
