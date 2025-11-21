@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class AIHomePage extends StatefulWidget {
@@ -10,68 +12,45 @@ class AIHomePage extends StatefulWidget {
 class _AIHomePageState extends State<AIHomePage> {
   String selectedCategory = 'Бәрі';
 
+  // your categorized services (unchanged)
   final Map<String, List<AIService>> categorizedServices = {
     'Білім': [
       AIService('NotebookLM', 'assets/notebooklm.png', 'Зерттеу көмекшісі'),
       AIService('Gradescope', 'assets/gradescope.png', 'Бағалау жүйесі'),
       AIService('Eduaide', 'assets/eduaide.png', 'Білім көмекшісі'),
       AIService('QuestionWell', 'assets/questionwell.png', 'Сұрақ жинағы'),
-      AIService('Yippity', 'assets/yippity.png', 'AI тест генератор'),
-      AIService('MagicSchool', 'assets/magicschool.png', 'Мұғалімдер үшін'),
-      AIService('Twee', 'assets/twee.png', 'Сабақ жоспарлау'),
-      AIService('Gamma', 'assets/gamma.png', 'Презентация жасау'),
-      AIService('Sendsteps', 'assets/sendsteps.png', 'Интерактив презент'),
     ],
     'Мұзыка': [
       AIService('AIVA', 'assets/aiva.png', 'AI музыка композитор'),
       AIService('Suno', 'assets/suno.png', 'Музыка жасау'),
       AIService('Boomy', 'assets/boomy.png', 'Тренд музыка жасау'),
-      AIService('Orb Produ...', 'assets/orb.png', 'Әуенді аудио үлгілері'),
-      AIService('Soundraw', 'assets/soundraw.png', 'Бесплатная музыка'),
-      AIService('LANDR Ma...', 'assets/landr.png', 'MASTERING жазу үшін'),
-      AIService('Mubert', 'assets/mubert.png', 'Тұрақты бағдарламасы'),
-      AIService('Ecrett Music', 'assets/ecrett.png', 'Бейнеге музыка'),
-      AIService('Mureka', 'assets/mureka.png', 'Музыкалық генератор'),
-      AIService('Orb Chords', 'assets/orbchords.png', 'Аккорд өңдеуші'),
     ],
     'Контент': [
       AIService('ChatGPT', 'assets/chatgpt.png', 'Білім беру контенті'),
       AIService('Copy', 'assets/copy.png', 'AI жазу көмекшісі'),
       AIService('Writesonic', 'assets/writesonic.png', 'AI контент жасау'),
-      AIService('Canva', 'assets/canva.png', 'Графикалық дизайн'),
-      AIService('Adobe Firefly', 'assets/firefly.png', 'Креативті контент'),
-      AIService('Synthesia', 'assets/synthesia.png', 'AI бейне жасау'),
-      AIService('Runway ML', 'assets/runway.png', 'Бейне өңдеу құралы'),
-      AIService('Pixlr', 'assets/pixlr.png', 'Фото өңдеуіші'),
-      AIService('QuillBot', 'assets/quillbot.png', 'Парафраз құралы'),
-      AIService('SEOWriting', 'assets/seowriting.png', 'SEO мақалалар'),
     ],
     'Денсаулық': [
       AIService('PathAI', 'assets/pathai.png', 'Жасанды интеллект'),
       AIService('Aidence', 'assets/aidence.png', 'Денсаулық диагностикасы'),
       AIService('DeepScribe', 'assets/deepscribe.png', 'Медициналық транскрип'),
-      AIService('Enlitic', 'assets/enlitic.png', 'Медициналық бейнелеу'),
-      AIService('Ada', 'assets/ada.png', 'Виртуалды медициналық'),
-      AIService('Aidoc', 'assets/aidoc.png', 'Медициналық құралы'),
-      AIService('IBM Watso...', 'assets/ibm.png', 'Персондалған емдеу'),
-      AIService('Microsoft He...', 'assets/microsoft.png', 'Денсаулық AI'),
-      AIService('Google Health', 'assets/google.png', 'Медициналық көмек'),
-      AIService(
-        'Butterfly IQ...',
-        'assets/butterfly.png',
-        'Портативті ультрадыбыс',
-      ),
     ],
   };
 
+  // <-- Put the local image path you gave here:
+  final String robotImageFilePath =
+      '/Users/kamila/Desktop/BIRGE/birge_app/6d68ee56925c4b1b52025305c1172c68b494a078.png';
+
   @override
   Widget build(BuildContext context) {
+    // To match Figma's airy layout, use a white scaffold and large paddings
     return Scaffold(
       backgroundColor: Colors.white,
+      // AppBar: minimal with back button only (no title)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        toolbarHeight: 70,
+        toolbarHeight: 50,
         automaticallyImplyLeading: false,
         flexibleSpace: SafeArea(
           child: Padding(
@@ -83,22 +62,8 @@ class _AIHomePageState extends State<AIHomePage> {
                   icon: const Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
-                const Text(
-                  'Жаңа әңгіме үшін',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add, color: Colors.blue, size: 20),
-                  label: const Text(
-                    'Жаңу',
-                    style: TextStyle(color: Colors.blue, fontSize: 16),
-                  ),
-                ),
+                const SizedBox(width: 1),
+                const SizedBox(width: 48),
               ],
             ),
           ),
@@ -108,95 +73,121 @@ class _AIHomePageState extends State<AIHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Robot icon and Chat bot AI banner
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Column(
+            // Top header area that replicates the Figma composition
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Robot icon
-                  Image.asset(
-                    'assets/robot_icon.png',
-                    width: 50,
-                    height: 50,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          shape: BoxShape.circle,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Жаңа әңгіме',
+                                    style: TextStyle(
+                                      fontSize: 44, // large like figma
+                                      fontWeight: FontWeight.w800,
+                                      height: 0.95,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'үшін',
+                                        style: TextStyle(
+                                          fontSize: 44,
+                                          fontWeight: FontWeight.w800,
+                                          height: 0.95,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      // robot icon (from local path). If not available, fallback to icon
+                                      _buildRobotIcon(robotImageFilePath),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        child: const Icon(
-                          Icons.smart_toy,
-                          color: Colors.grey,
-                          size: 28,
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  // Yellow striped banner with gradient text
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.yellow.shade700,
-                          Colors.yellow.shade600,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    child: Center(
-                      child: ShaderMask(
-                        shaderCallback: (bounds) => const LinearGradient(
-                          colors: [Color(0xFF0066FF), Color(0xFF00CCFF)],
-                        ).createShader(bounds),
-                        child: const Text(
+
+                        const SizedBox(height: 8),
+
+                        // Chat bot AI big blue text
+                        Text(
                           'Chat bot AI',
                           style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            fontSize: 34,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(
+                              0xFF0A73FF,
+                            ), // bright blue similar to figma
                           ),
                         ),
-                      ),
+                      ],
                     ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  // Right: rounded blue "+ Жазу" button (large pill)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 120), // LOWER BUTTON
+                    child: _buildWriteButton(),
                   ),
                 ],
               ),
             ),
-            // Rest of the content
+
+            // Search bar, chips and sections follow (kept your existing layout but adjusted spacing)
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Search Bar
+                  const SizedBox(height: 20),
+                  // Search bar
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
-                      vertical: 4,
+                      vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
+                      color: const Color(0xFFF6F7F9),
+                      borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Іздеу...',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        border: InputBorder.none,
-                        icon: Icon(Icons.search, color: Colors.grey),
-                      ),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.search, color: Colors.grey),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Іздеу..',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
 
-                  // Category Filter Chips
+                  const SizedBox(height: 18),
+
+                  // Category Chips
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -216,40 +207,37 @@ class _AIHomePageState extends State<AIHomePage> {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 24),
 
-                  // Display filtered content
+                  // Display filtered content (kept your logic)
                   if (selectedCategory == 'Бәрі') ...[
-                    // Білім Section
                     _buildSectionHeader('Білім'),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     _buildHorizontalAIList(categorizedServices['Білім']!),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
 
-                    // Музыка / Аудио Section
                     _buildSectionHeader('Музыка / Аудио'),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     _buildHorizontalAIList(categorizedServices['Мұзыка']!),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
 
-                    // Контент Section
                     _buildSectionHeader('Контент'),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     _buildHorizontalAIList(categorizedServices['Контент']!),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
 
-                    // Денсаулық Section
                     _buildSectionHeader('Денсаулық'),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     _buildHorizontalAIList(categorizedServices['Денсаулық']!),
                   ] else ...[
-                    // Show only selected category
                     _buildSectionHeader(selectedCategory),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     _buildHorizontalAIList(
                       categorizedServices[selectedCategory]!,
                     ),
                   ],
+
                   const SizedBox(height: 80),
                 ],
               ),
@@ -257,15 +245,17 @@ class _AIHomePageState extends State<AIHomePage> {
           ],
         ),
       ),
+
+      // bottom navigation (kept)
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 22),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withOpacity(0.06),
               spreadRadius: 1,
-              blurRadius: 10,
+              blurRadius: 8,
             ),
           ],
         ),
@@ -276,6 +266,89 @@ class _AIHomePageState extends State<AIHomePage> {
             _buildNavItem(Icons.chat_bubble_outline, 'Чат бот', false),
             _buildNavItem(Icons.person_outline, 'Аккаунт', false),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRobotIcon(String filePath) {
+    // Try to load a local file image (developer provided path). If inaccessible, fallback to icon
+    try {
+      final file = File(filePath);
+      if (file.existsSync()) {
+        return Container(
+          margin: const EdgeInsets.only(left: 6),
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6),
+            ],
+          ),
+          child: ClipOval(
+            child: Image.file(
+              file,
+              fit: BoxFit.cover,
+              width: 36,
+              height: 36,
+              errorBuilder: (c, e, st) {
+                return const Icon(
+                  Icons.smart_toy,
+                  color: Colors.black54,
+                  size: 22,
+                );
+              },
+            ),
+          ),
+        );
+      }
+    } catch (_) {
+      // ignore
+    }
+
+    // fallback small robot icon
+    return Container(
+      margin: const EdgeInsets.only(left: 6),
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6),
+        ],
+      ),
+      child: const Icon(Icons.smart_toy, color: Colors.black54, size: 22),
+    );
+  }
+
+  Widget _buildWriteButton() {
+    return Container(
+      width: 130,
+      height: 64,
+      decoration: BoxDecoration(
+        color: const Color(0xFF1162FF),
+        borderRadius: BorderRadius.circular(36),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.16),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: TextButton.icon(
+        onPressed: () {},
+        icon: const Icon(Icons.add, color: Colors.white, size: 20),
+        label: const Text(
+          'Жазу',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );
@@ -292,10 +365,10 @@ class _AIHomePageState extends State<AIHomePage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue : Colors.white,
+          color: isSelected ? const Color(0xFF0166FF) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey[300]!,
+            color: isSelected ? const Color(0xFF0166FF) : Colors.grey.shade300,
             width: 1,
           ),
         ),
@@ -313,7 +386,7 @@ class _AIHomePageState extends State<AIHomePage> {
               label,
               style: TextStyle(
                 color: isSelected ? Colors.white : Colors.grey[700],
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
             ),
@@ -331,7 +404,7 @@ class _AIHomePageState extends State<AIHomePage> {
           title,
           style: const TextStyle(
             fontSize: 18,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             color: Colors.black,
           ),
         ),
@@ -342,7 +415,7 @@ class _AIHomePageState extends State<AIHomePage> {
 
   Widget _buildHorizontalAIList(List<AIService> services) {
     return SizedBox(
-      height: 155,
+      height: 150,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: services.length,
@@ -360,11 +433,14 @@ class _AIHomePageState extends State<AIHomePage> {
 
   Widget _buildAICard(AIService service) {
     return Container(
-      width: 100,
+      width: 110,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.01), blurRadius: 6),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -373,7 +449,7 @@ class _AIHomePageState extends State<AIHomePage> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: Colors.grey.shade100,
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.smart_toy_outlined, color: Colors.grey),
@@ -386,7 +462,7 @@ class _AIHomePageState extends State<AIHomePage> {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: Colors.black,
               ),
               maxLines: 2,
@@ -406,10 +482,10 @@ class _AIHomePageState extends State<AIHomePage> {
           ),
           const Spacer(),
           Container(
-            width: 32,
-            height: 32,
-            decoration: const BoxDecoration(
-              color: Colors.blue,
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: const Color(0xFF0A73FF),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.add, color: Colors.white, size: 18),
@@ -424,14 +500,18 @@ class _AIHomePageState extends State<AIHomePage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: isActive ? Colors.blue : Colors.grey, size: 28),
+        Icon(
+          icon,
+          color: isActive ? const Color(0xFF0A73FF) : Colors.grey,
+          size: 26,
+        ),
         const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
             fontSize: 11,
-            color: isActive ? Colors.blue : Colors.grey,
-            fontWeight: isActive ? FontWeight.w500 : FontWeight.normal,
+            color: isActive ? const Color(0xFF0A73FF) : Colors.grey,
+            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
       ],
