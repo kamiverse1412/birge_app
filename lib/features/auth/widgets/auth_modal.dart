@@ -33,245 +33,142 @@ class AuthModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+      decoration: const BoxDecoration(
+        color: AppColors.modalBackground,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(28),
+          topRight: Radius.circular(28),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Drag handle
-          Container(
-            margin: const EdgeInsets.only(top: 12, bottom: 8),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          // Header with close button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(width: 24),
-                if (onClose != null)
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.grey),
-                    onPressed: onClose,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-              ],
-            ),
-          ),
-
-          // Title
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              'Әлі аккаунтыңыз жоқ па?',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle
+            Container(
+              margin: const EdgeInsets.only(top: 12, bottom: 12),
+              width: 48,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.modalDivider,
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
-          ),
 
-          const SizedBox(height: 24),
-
-          // Tabs
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
+            // Header with close button
+            Row(
               children: [
                 Expanded(
-                  child: GestureDetector(
-                    onTap: isLogin ? null : onToggleMode,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: isLogin
-                                ? AppColors.primary
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Кіру',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: isLogin
-                              ? AppColors.primary
-                              : AppColors.textSecondary,
-                        ),
-                      ),
+                  child: Text(
+                    'Әлі аккаунтыңыз жоқ па?',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textOnDarkPrimary,
                     ),
                   ),
                 ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: !isLogin ? null : onToggleMode,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: !isLogin
-                                ? AppColors.primary
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Тіркелу',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: !isLogin
-                              ? AppColors.primary
-                              : AppColors.textSecondary,
-                        ),
-                      ),
+                if (onClose != null)
+                  IconButton(
+                    onPressed: onClose,
+                    icon: const Icon(
+                      Icons.close,
+                      color: AppColors.textOnDarkSecondary,
                     ),
                   ),
-                ),
               ],
             ),
-          ),
 
-          const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
-          // Form fields
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
+            // Tabs
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.modalSurface,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: isLogin ? null : onToggleMode,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color:
+                              isLogin ? Colors.white : Colors.transparent,
+                        ),
+                        child: Text(
+                          'Кіру',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: isLogin
+                                ? AppColors.modalBackground
+                                : AppColors.textOnDarkSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: !isLogin ? null : onToggleMode,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color:
+                              !isLogin ? Colors.white : Colors.transparent,
+                        ),
+                        child: Text(
+                          'Тіркелу',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: !isLogin
+                                ? AppColors.modalBackground
+                                : AppColors.textOnDarkSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Form fields
+            Column(
               children: [
-                // Email field
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Электронды пошта',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
-                        ),
-                      ),
-                    ),
-                  ],
+                _buildLabel('Электронды пошта'),
+                _buildTextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
                 ),
 
                 const SizedBox(height: 20),
 
-                // Password field
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Құпиясөз',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: const Icon(
-                            Icons.visibility_off,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {},
-                        ),
-                      ),
-                    ),
-                  ],
+                _buildLabel('Құпиясөз'),
+                _buildTextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  showVisibilityToggle: true,
                 ),
 
                 if (!isLogin && confirmPasswordController != null) ...[
                   const SizedBox(height: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Құпиясөзді растау',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: confirmPasswordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: const Icon(
-                              Icons.visibility_off,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {},
-                          ),
-                        ),
-                      ),
-                    ],
+                  _buildLabel('Құпиясөзді растау'),
+                  _buildTextField(
+                    controller: confirmPasswordController!,
+                    obscureText: true,
+                    showVisibilityToggle: true,
                   ),
                 ],
 
@@ -284,21 +181,36 @@ class AuthModal extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Checkbox(
-                            value: rememberMe,
-                            onChanged: (value) {
-                              if (value != null &&
-                                  onRememberMeChanged != null) {
-                                onRememberMeChanged!(value);
-                              }
-                            },
-                            activeColor: AppColors.primary,
+                          Transform.scale(
+                            scale: 0.9,
+                            child: Checkbox(
+                              value: rememberMe,
+                              onChanged: (value) {
+                                if (value != null &&
+                                    onRememberMeChanged != null) {
+                                  onRememberMeChanged!(value);
+                                }
+                              },
+                              checkColor: AppColors.modalBackground,
+                              side: const BorderSide(
+                                color: AppColors.textOnDarkSecondary,
+                              ),
+                              fillColor: MaterialStateProperty.resolveWith(
+                                (states) {
+                                  if (states
+                                      .contains(MaterialState.selected)) {
+                                    return Colors.white;
+                                  }
+                                  return Colors.transparent;
+                                },
+                              ),
+                            ),
                           ),
                           const Text(
                             'Мені есте сақта',
                             style: TextStyle(
                               fontSize: 14,
-                              color: AppColors.textPrimary,
+                              color: AppColors.textOnDarkPrimary,
                             ),
                           ),
                         ],
@@ -323,29 +235,20 @@ class AuthModal extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AIHomePage(),
-                        ),
-                      );
-                    },
+                    onPressed: onPrimaryAction,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.modalBackground,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                    ),
-                    child: Text(
-                      isLogin ? 'Кіру' : 'Тіркелу',
-                      style: const TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    child: Text(isLogin ? 'Кіру' : 'Тіркелу'),
                   ),
                 ),
 
@@ -354,18 +257,26 @@ class AuthModal extends StatelessWidget {
                 // Separator
                 const Row(
                   children: [
-                    Expanded(child: Divider()),
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.modalDivider,
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         'Немесе',
                         style: TextStyle(
                           fontSize: 14,
-                          color: AppColors.textSecondary,
+                          color: AppColors.textOnDarkSecondary,
                         ),
                       ),
                     ),
-                    Expanded(child: Divider()),
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.modalDivider,
+                      ),
+                    ),
                   ],
                 ),
 
@@ -379,25 +290,31 @@ class AuthModal extends StatelessWidget {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      side: BorderSide(color: Colors.grey[300]!),
+                      side: const BorderSide(color: AppColors.modalDivider),
+                      backgroundColor: AppColors.modalSurface,
+                      foregroundColor: AppColors.textOnDarkPrimary,
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 20,
-                          height: 20,
+                          width: 24,
+                          height: 24,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Center(
                             child: Text(
                               'G',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blue,
                               ),
@@ -405,14 +322,7 @@ class AuthModal extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
-                          'Google арқылы жалғастыру',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
+                        const Text('Google арқылы жалғастыру'),
                       ],
                     ),
                   ),
@@ -421,9 +331,67 @@ class AuthModal extends StatelessWidget {
                 const SizedBox(height: 32),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textOnDarkSecondary,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    bool obscureText = false,
+    TextInputType? keyboardType,
+    bool showVisibilityToggle = false,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      style: const TextStyle(
+        color: AppColors.textOnDarkPrimary,
+        fontSize: 15,
+      ),
+      cursorColor: Colors.white70,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: AppColors.modalSurface,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.modalDivider),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.primary),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        suffixIcon: showVisibilityToggle
+            ? IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.visibility_off,
+                  color: AppColors.textOnDarkSecondary,
+                ),
+              )
+            : null,
       ),
     );
   }
 }
+
