@@ -1,5 +1,5 @@
+import 'package:birge_app/features/auth/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import '../features/auth/pages/register_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -9,12 +9,8 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Birge App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const RegisterPage(),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      home: const AIHomePage(),
     );
   }
 }
-
