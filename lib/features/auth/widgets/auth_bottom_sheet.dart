@@ -10,19 +10,33 @@ class AuthBottomSheet extends StatefulWidget {
 }
 
 class _AuthBottomSheetState extends State<AuthBottomSheet> {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   bool _isLogin = true;
   bool _rememberMe = false;
 
   @override
+  void initState() {
+    super.initState();
+    _phoneController.text = '+7 ';
+  }
+
+  @override
   void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _birthDateController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -36,9 +50,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     final messenger = ScaffoldMessenger.of(context);
     Navigator.of(context).pop();
     messenger.showSnackBar(
-      SnackBar(
-        content: Text(_isLogin ? 'Кіру сәтті' : 'Тіркелу сәтті'),
-      ),
+      SnackBar(content: Text(_isLogin ? 'Кіру сәтті' : 'Тіркелу сәтті')),
     );
   }
 
@@ -54,6 +66,24 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Құпиясөзді қалпына келтіру әзірге жоқ')),
     );
+  }
+
+  Future<void> _selectBirthDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: now.subtract(const Duration(days: 365 * 18)),
+      firstDate: DateTime(1950),
+      lastDate: now,
+    );
+    if (picked != null) {
+      final day = picked.day.toString().padLeft(2, '0');
+      final month = picked.month.toString().padLeft(2, '0');
+      final year = picked.year.toString().substring(2);
+      setState(() {
+        _birthDateController.text = '$day.$month.$year';
+      });
+    }
   }
 
   @override
@@ -79,10 +109,16 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                 isLogin: _isLogin,
                 onToggleMode: _toggleMode,
                 onClose: () => Navigator.of(context).pop(),
+                firstNameController: _isLogin ? null : _firstNameController,
+                lastNameController: _isLogin ? null : _lastNameController,
                 emailController: _emailController,
                 passwordController: _passwordController,
-                confirmPasswordController:
-                    _isLogin ? null : _confirmPasswordController,
+                confirmPasswordController: _isLogin
+                    ? null
+                    : _confirmPasswordController,
+                birthDateController: _isLogin ? null : _birthDateController,
+                phoneController: _isLogin ? null : _phoneController,
+                onBirthDateTap: _isLogin ? null : _selectBirthDate,
                 rememberMe: _rememberMe,
                 onRememberMeChanged: (value) {
                   setState(() {
@@ -100,4 +136,3 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     );
   }
 }
-
