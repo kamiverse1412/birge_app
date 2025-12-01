@@ -7,7 +7,9 @@ import 'auth_page_route.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final String? serviceName;
+
+  const LoginPage({Key? key, this.serviceName}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -18,6 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _rememberMe = false;
 
+  static const String validEmail = 'mukashkamila@gmail.com';
+  static const String validPassword = '12345678';
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -26,18 +31,39 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleLogin() {
-    // Handle login logic here
-    print('Login with email: ${_emailController.text}');
+    if (_emailController.text == validEmail &&
+        _passwordController.text == validPassword) {
+      Navigator.pop(context, {
+        'success': true,
+        'serviceName': widget.serviceName,
+        'email': _emailController.text,
+        'name': 'Mukash Kamila',
+      });
+    } else if (_emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Барлық өрістерді толтырыңыз')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Қате email немесе құпиясөз')),
+      );
+    }
   }
 
   void _handleGoogleSignIn() {
-    // Handle Google sign in logic here
-    print('Google sign in');
+    Navigator.pop(context, {
+      'success': true,
+      'serviceName': widget.serviceName,
+      'email': 'mukashkamila@gmail.com',
+      'name': 'Mukash Kamila',
+    });
   }
 
   void _handleForgotPassword() {
-    // Handle forgot password logic here
-    print('Forgot password');
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Құпиясөзді қалпына келтіру')));
   }
 
   void _handleToggleMode() {
@@ -52,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Blurred background
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
@@ -60,12 +85,12 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
-          // Modal content
           SafeArea(
-            child: Column(
-              children: [
-                const Spacer(),
-                AuthModal(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.80,
+                child: AuthModal(
                   isLogin: true,
                   onToggleMode: _handleToggleMode,
                   onClose: () => Navigator.of(context).pop(),
@@ -81,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                   onGoogleSignIn: _handleGoogleSignIn,
                   onForgotPassword: _handleForgotPassword,
                 ),
-              ],
+              ),
             ),
           ),
         ],

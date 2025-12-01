@@ -1,6 +1,10 @@
 import 'dart:io';
-
+import 'dart:ui';
+import 'package:birge_app/app/widgets/service_info_modal.dart';
+import 'package:birge_app/features/auth/widgets/auth_modal.dart';
 import 'package:flutter/material.dart';
+import 'chatbot_page.dart';
+import 'login_page.dart';
 
 class AIHomePage extends StatelessWidget {
   const AIHomePage({Key? key}) : super(key: key);
@@ -11,8 +15,8 @@ class AIHomePage extends StatelessWidget {
 
 class _AIHomePageState extends State<AIHomePage> {
   String selectedCategory = 'Бәрі';
+  bool _isAuthenticated = false;
 
-  // your categorized services (unchanged)
   final Map<String, List<AIService>> categorizedServices = {
     'Білім': [
       AIService('NotebookLM', 'assets/notebooklm.png', 'Зерттеу көмекшісі'),
@@ -37,16 +41,100 @@ class _AIHomePageState extends State<AIHomePage> {
     ],
   };
 
-  // <-- Put the local image path you gave here:
   final String robotImageFilePath =
       '/Users/kamila/Desktop/BIRGE/birge_app/6d68ee56925c4b1b52025305c1172c68b494a078.png';
+  void _handleAIServiceTap(AIService service) {
+    final pageContext = context; // ❤️ save the REAL context once
+
+    showModalBottomSheet(
+      context: pageContext,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) {
+        return ServiceInfoModal(
+          serviceName: service.name,
+          onStartChat: () async {
+            Navigator.pop(modalContext); // close service modal
+
+            // open auth modal
+            final result = await showModalBottomSheet(
+              context:
+                  pageContext, // ❤️ IMPORTANT: use page context, NOT modal context
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (authContext) {
+                return AuthModal(
+                  isLogin: false,
+                  onToggleMode: () {},
+                  emailController: TextEditingController(),
+                  passwordController: TextEditingController(),
+                  confirmPasswordController: TextEditingController(),
+                  rememberMe: false,
+                  onRememberMeChanged: (_) {},
+                  onPrimaryAction: () {
+                    Navigator.pop(authContext, true);
+                  },
+                  onGoogleSignIn: () {},
+                );
+              },
+            );
+
+            if (!mounted) return;
+
+            if (result == true) {
+              Navigator.push(
+                pageContext, // ❤️ safe context guaranteed to work!
+                MaterialPageRoute(
+                  builder: (_) => ChatBotPage(serviceName: service.name),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
+  void _handleAccountTap() async {
+    final result = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return AuthModal(
+          isLogin: true,
+          onToggleMode: () {},
+          emailController: TextEditingController(),
+          passwordController: TextEditingController(),
+          rememberMe: false,
+          onRememberMeChanged: (v) {},
+          onPrimaryAction: () {
+            Navigator.pop(context, {
+              'success': true,
+              'email': 'example@gmail.com',
+              'name': 'User',
+            });
+          },
+          onGoogleSignIn: () {},
+        );
+      },
+    );
+
+    if (result != null && result['success'] == true) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              AccountPage(email: result['email'], name: result['name']),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // To match Figma's airy layout, use a white scaffold and large paddings
     return Scaffold(
       backgroundColor: Colors.white,
-      // AppBar: minimal with back button only (no title)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -282,8 +370,6 @@ class _AIHomePageState extends State<AIHomePage> {
           ),
         ),
       ),
-
-      // bottom navigation (kept)
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 22),
         decoration: BoxDecoration(
@@ -299,9 +385,14 @@ class _AIHomePageState extends State<AIHomePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem(Icons.home, 'Басты бет', true),
-            _buildNavItem(Icons.chat_bubble_outline, 'Чат бот', false),
-            _buildNavItem(Icons.person_outline, 'Аккаунт', false),
+            _buildNavItem(Icons.home, 'Басты бет', true, () {}),
+            _buildNavItem(Icons.chat_bubble_outline, 'Чат бот', false, () {}),
+            _buildNavItem(
+              Icons.person_outline,
+              'Аккаунт',
+              false,
+              _handleAccountTap,
+            ),
           ],
         ),
       ),
@@ -459,10 +550,19 @@ class _AIHomePageState extends State<AIHomePage> {
 
 
             color: isActive ? const Color(0xFF0A73FF) : Colors.grey,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+            size: 26,
           ),
-        ),
-      ],
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: isActive ? const Color(0xFF0A73FF) : Colors.grey,
+              fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -473,4 +573,171 @@ class AIService {
   final String description;
 
   AIService(this.name, this.iconPath, this.description);
+}
+
+class AccountPage extends StatelessWidget {
+  final String email;
+  final String name;
+
+  const AccountPage({Key? key, required this.email, required this.name})
+    : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0A73FF),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.person, size: 60, color: Colors.white),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0A73FF),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(
+                      Icons.workspace_premium,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      'ChatGPT Premium',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'ChatGPT Премиум тарифы аяқталуына 278 күн қалды.',
+                style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              _buildInfoRow('Аты-жөні', name),
+              _buildInfoRow('Поштасы', email),
+              _buildInfoRow('Режим', 'Жүйе бойынша әдепкі'),
+              _buildActionRow(
+                'Құпиясөз ауыстыру',
+                Icons.arrow_forward_ios,
+                () {},
+              ),
+              _buildActionRow(
+                'Тарифтар',
+                Icons.arrow_forward_ios,
+                () {},
+                subtitle: 'Бағаларды көру',
+                subtitleColor: const Color(0xFF0A73FF),
+              ),
+              const SizedBox(height: 40),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[800],
+            ),
+          ),
+          Text(value, style: TextStyle(fontSize: 15, color: Colors.grey[600])),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionRow(
+    String label,
+    IconData icon,
+    VoidCallback onTap, {
+    String? subtitle,
+    Color? subtitleColor,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+            Row(
+              children: [
+                if (subtitle != null)
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: subtitleColor ?? Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                const SizedBox(width: 8),
+                Icon(icon, size: 16, color: Colors.grey[400]),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

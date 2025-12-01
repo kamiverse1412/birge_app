@@ -14,14 +14,14 @@ class AuthModal extends StatelessWidget {
   final TextEditingController? birthDateController;
   final TextEditingController? phoneController;
   final bool rememberMe;
-  final ValueChanged<bool>? onRememberMeChanged;
+  final ValueChanged<bool> onRememberMeChanged;
   final VoidCallback onPrimaryAction;
   final VoidCallback onGoogleSignIn;
   final VoidCallback? onForgotPassword;
   final VoidCallback? onBirthDateTap;
 
   const AuthModal({
-    super.key,
+    Key? key,
     required this.isLogin,
     required this.onToggleMode,
     this.onClose,
@@ -172,6 +172,7 @@ class AuthModal extends StatelessWidget {
                         ),
                       ),
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -205,7 +206,7 @@ class AuthModal extends StatelessWidget {
                   keyboardType: TextInputType.emailAddress,
                 ),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 24),
 
                 if (!isLogin && birthDateController != null) ...[
                   _buildLabel('Туған күн'),
@@ -268,9 +269,49 @@ class AuthModal extends StatelessWidget {
                     obscureText: true,
                     showVisibilityToggle: true,
                   ),
-                ],
 
-                const SizedBox(height: 20),
+                  // Confirm password for register
+                  if (!isLogin && confirmPasswordController != null) ...[
+                    const SizedBox(height: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Құпиясөзді растау',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: confirmPasswordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: '••••••••',
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                            filled: true,
+                            fillColor: const Color(0xFFF6F7F9),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            suffixIcon: Icon(
+                              Icons.visibility_off_outlined,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+
+                  const SizedBox(height: 16),
 
                 // Remember me and Forgot password
                 if (isLogin)
@@ -311,23 +352,32 @@ class AuthModal extends StatelessWidget {
                               color: AppColors.textOnDarkPrimary,
                             ),
                           ),
-                        ],
-                      ),
-                      if (onForgotPassword != null)
-                        TextButton(
-                          onPressed: onForgotPassword,
-                          child: const Text(
-                            'Құпиясөзді ұмыттыңыз ба?',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.primary,
-                            ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Мені есте сақта',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey[700],
                           ),
                         ),
-                    ],
-                  ),
+                        const Spacer(),
+                        if (onForgotPassword != null)
+                          GestureDetector(
+                            onTap: onForgotPassword,
+                            child: Text(
+                              'Құпиясөзді ұмыттыңыз ба?',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: const Color(0xFF0A73FF),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
 
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
                 // Primary action button
                 SizedBox(
@@ -348,9 +398,8 @@ class AuthModal extends StatelessWidget {
                     ),
                     child: Text(isLogin ? 'Кіру' : 'Тіркелу'),
                   ),
-                ),
 
-                const SizedBox(height: 24),
+                  const SizedBox(height: 16),
 
                 // Separator
                 const Row(
@@ -370,7 +419,7 @@ class AuthModal extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 24),
+                  const SizedBox(height: 16),
 
                 // Google sign in button
                 SizedBox(
@@ -416,10 +465,8 @@ class AuthModal extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 32),
-              ],
+                ],
+              ),
             ),
           ],
         ),

@@ -7,7 +7,9 @@ import 'auth_page_route.dart';
 import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  final String? serviceName;
+
+  const RegisterPage({Key? key, this.serviceName}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -37,13 +39,35 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _handleRegister() {
-    // Handle registration logic here
-    print('Register with email: ${_emailController.text}');
+    if (_emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Барлық өрістерді толтырыңыз')),
+      );
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Құпиясөздер сәйкес емес')));
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const AIHomePage()),
+    );
   }
 
   void _handleGoogleSignIn() {
-    // Handle Google sign in logic here
-    print('Google sign in');
+    Navigator.pop(context, {
+      'success': true,
+      'serviceName': widget.serviceName,
+      'email': 'mukashkamila@gmail.com',
+      'name': 'Mukash Kamila',
+    });
   }
 
   void _handleToggleMode() {
@@ -83,7 +107,6 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Blurred background
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
