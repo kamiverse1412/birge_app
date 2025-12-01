@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
-import '../features/auth/pages/register_page.dart';
+import 'package:birge_app/features/auth/pages/home_page.dart';
+import 'package:flutter/material.dart'; // Your home page
+// import '../features/auth/pages/login_page.dart';  // REMOVE OR IGNORE
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -7,14 +8,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Birge App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const RegisterPage(),
+      title: 'Birge AI',
+      home: const AIHomePage(), // THIS MUST BE THE FIRST SCREEN
     );
   }
 }
-
