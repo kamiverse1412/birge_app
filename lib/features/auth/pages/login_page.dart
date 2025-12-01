@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
 import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
 import '../widgets/auth_modal.dart';
+import 'auth_page_route.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -65,9 +68,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleToggleMode() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => RegisterPage(serviceName: widget.serviceName),
-      ),
+      AuthPageRoute(child: const RegisterPage(), withAnimation: false),
     );
   }
 
@@ -79,8 +80,8 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Positioned.fill(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(color: Colors.black.withOpacity(0.3)),
+              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+              child: Container(color: Colors.black.withOpacity(0.15)),
             ),
           ),
 
@@ -92,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: AuthModal(
                   isLogin: true,
                   onToggleMode: _handleToggleMode,
+                  onClose: () => Navigator.of(context).pop(),
                   emailController: _emailController,
                   passwordController: _passwordController,
                   rememberMe: _rememberMe,

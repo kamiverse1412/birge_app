@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'chatbot_page.dart';
 import 'login_page.dart';
 
-class AIHomePage extends StatefulWidget {
+class AIHomePage extends StatelessWidget {
   const AIHomePage({Key? key}) : super(key: key);
 
   @override
@@ -156,158 +156,218 @@ class _AIHomePageState extends State<AIHomePage> {
             ),
           ),
         ),
+        actions: [
+          TextButton.icon(
+            onPressed: () => _openLoginPage(context),
+            icon: const Icon(Icons.add, color: Colors.blue),
+            label: const Text(
+              'Жану',
+              style: TextStyle(color: Colors.blue, fontSize: 16),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Жаңа әңгіме',
-                                    style: TextStyle(
-                                      fontSize: 44,
-                                      fontWeight: FontWeight.w800,
-                                      height: 0.95,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'үшін',
-                                        style: TextStyle(
-                                          fontSize: 44,
-                                          fontWeight: FontWeight.w800,
-                                          height: 0.95,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      _buildRobotIcon(robotImageFilePath),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Chat bot AI',
-                          style: TextStyle(
-                            fontSize: 34,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFF0A73FF),
-                          ),
-                        ),
-                      ],
-                    ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search Bar
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Іздеу...',
+                    border: InputBorder.none,
+                    icon: Icon(Icons.search, color: Colors.grey),
                   ),
-                  const SizedBox(width: 12),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 120),
-                    child: _buildWriteButton(),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Quick Actions
+              Row(
+                children: [
+                  _buildQuickActionChip('Білім', Icons.school, Colors.blue),
+                  const SizedBox(width: 8),
+                  _buildQuickActionChip(
+                    'Мұзыка',
+                    Icons.music_note,
+                    Colors.blue,
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF6F7F9),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Row(
-                      children: const [
-                        Icon(Icons.search, color: Colors.grey),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Іздеу..',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _buildCategoryChip('Бәрі', null),
-                        const SizedBox(width: 8),
-                        _buildCategoryChip('Білім', Icons.school),
-                        const SizedBox(width: 8),
-                        _buildCategoryChip('Мұзыка', Icons.music_note),
-                        const SizedBox(width: 8),
-                        _buildCategoryChip('Контент', Icons.content_copy),
-                        const SizedBox(width: 8),
-                        _buildCategoryChip(
-                          'Денсаулық',
-                          Icons.health_and_safety,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  if (selectedCategory == 'Бәрі') ...[
-                    _buildSectionHeader('Білім'),
-                    const SizedBox(height: 12),
-                    _buildHorizontalAIList(categorizedServices['Білім']!),
-                    const SizedBox(height: 20),
-                    _buildSectionHeader('Музыка / Аудио'),
-                    const SizedBox(height: 12),
-                    _buildHorizontalAIList(categorizedServices['Мұзыка']!),
-                    const SizedBox(height: 20),
-                    _buildSectionHeader('Контент'),
-                    const SizedBox(height: 12),
-                    _buildHorizontalAIList(categorizedServices['Контент']!),
-                    const SizedBox(height: 20),
-                    _buildSectionHeader('Денсаулық'),
-                    const SizedBox(height: 12),
-                    _buildHorizontalAIList(categorizedServices['Денсаулық']!),
-                  ] else ...[
-                    _buildSectionHeader(selectedCategory),
-                    const SizedBox(height: 12),
-                    _buildHorizontalAIList(
-                      categorizedServices[selectedCategory]!,
-                    ),
-                  ],
-                  const SizedBox(height: 80),
-                ],
-              ),
-            ),
-          ],
+              const SizedBox(height: 24),
+
+              // Білім Section
+              _buildSectionHeader('Білім'),
+              const SizedBox(height: 16),
+              _buildAIGrid(context, [
+                AIService(
+                  'NotebookLM',
+                  'assets/notebooklm.png',
+                  'Зерттеу көмекшісі',
+                ),
+                AIService(
+                  'Gradescope',
+                  'assets/gradescope.png',
+                  'Бағалау жүйесі',
+                ),
+                AIService('Eduaide', 'assets/eduaide.png', 'Білім көмекшісі'),
+                AIService(
+                  'QuestionWell',
+                  'assets/questionwell.png',
+                  'Сұрақ жинағы',
+                ),
+                AIService('Yippity', 'assets/yippity.png', 'AI тест генератор'),
+                AIService(
+                  'MagicSchool',
+                  'assets/magicschool.png',
+                  'Мұғалімдер үшін',
+                ),
+                AIService('Twee', 'assets/twee.png', 'Сабақ жоспарлау'),
+                AIService('Gamma', 'assets/gamma.png', 'Презентация жасау'),
+                AIService(
+                  'Sendsteps',
+                  'assets/sendsteps.png',
+                  'Интерактив презент',
+                ),
+              ]),
+              const SizedBox(height: 32),
+
+              // Музыка / Аудио Section
+              _buildSectionHeader('Музыка / Аудио'),
+              const SizedBox(height: 16),
+              _buildAIGrid(context, [
+                AIService('AIVA', 'assets/aiva.png', 'AI музыка композитор'),
+                AIService('Suno', 'assets/suno.png', 'Музыка жасау'),
+                AIService('Boomy', 'assets/boomy.png', 'Тренд музыка жасау'),
+                AIService(
+                  'Orb Produ...',
+                  'assets/orb.png',
+                  'Әуенді аудио үлгілері',
+                ),
+                AIService(
+                  'Soundraw',
+                  'assets/soundraw.png',
+                  'Бесплатная музыка',
+                ),
+                AIService(
+                  'LANDR Ma...',
+                  'assets/landr.png',
+                  'MASTERING жазу үшін',
+                ),
+                AIService(
+                  'Mubert',
+                  'assets/mubert.png',
+                  'Тұрақты бағдарламасы',
+                ),
+                AIService(
+                  'Ecrett Music',
+                  'assets/ecrett.png',
+                  'Бейнеге музыка',
+                ),
+                AIService('Mureka', 'assets/mureka.png', 'Музыкалық генератор'),
+                AIService(
+                  'Orb Chords',
+                  'assets/orbchords.png',
+                  'Аккорд өңдеуші',
+                ),
+              ]),
+              const SizedBox(height: 32),
+
+              // Контент Section
+              _buildSectionHeader('Контент'),
+              const SizedBox(height: 16),
+              _buildAIGrid(context, [
+                AIService(
+                  'ChatGPT',
+                  'assets/chatgpt.png',
+                  'Білім беру контенті',
+                ),
+                AIService('Copy', 'assets/copy.png', 'AI жазу көмекшісі'),
+                AIService(
+                  'Writesonic',
+                  'assets/writesonic.png',
+                  'AI контент жасау',
+                ),
+                AIService('Canva', 'assets/canva.png', 'Графикалық дизайн'),
+                AIService(
+                  'Adobe Firefly',
+                  'assets/firefly.png',
+                  'Креативті контент',
+                ),
+                AIService(
+                  'Synthesia',
+                  'assets/synthesia.png',
+                  'AI бейне жасау',
+                ),
+                AIService(
+                  'Runway ML',
+                  'assets/runway.png',
+                  'Бейне өңдеу құралы',
+                ),
+                AIService('Pixlr', 'assets/pixlr.png', 'Фото өңдеуіші'),
+                AIService('QuillBot', 'assets/quillbot.png', 'Парафраз құралы'),
+                AIService(
+                  'SEOWriting',
+                  'assets/seowriting.png',
+                  'SEO мақалалар',
+                ),
+              ]),
+              const SizedBox(height: 32),
+
+              // Денсаулық Section
+              _buildSectionHeader('Денсаулық'),
+              const SizedBox(height: 16),
+              _buildAIGrid(context, [
+                AIService('PathAI', 'assets/pathai.png', 'Жасанды интеллект'),
+                AIService(
+                  'Aidence',
+                  'assets/aidence.png',
+                  'Денсаулық диагностикасы',
+                ),
+                AIService(
+                  'DeepScribe',
+                  'assets/deepscribe.png',
+                  'Медициналық транскрип',
+                ),
+                AIService(
+                  'Enlitic',
+                  'assets/enlitic.png',
+                  'Медициналық бейнелеу',
+                ),
+                AIService('Ada', 'assets/ada.png', 'Виртуалды медициналық'),
+                AIService('Aidoc', 'assets/aidoc.png', 'Медициналық құралы'),
+                AIService(
+                  'IBM Watso...',
+                  'assets/ibm.png',
+                  'Персондалған емдеу',
+                ),
+                AIService(
+                  'Microsoft He...',
+                  'assets/microsoft.png',
+                  'Денсаулық AI',
+                ),
+                AIService(
+                  'Google Health',
+                  'assets/google.png',
+                  'Медициналық көмек',
+                ),
+                AIService(
+                  'Butterfly IQ...',
+                  'assets/butterfly.png',
+                  'Портативті ультрадыбыс',
+                ),
+              ]),
+              const SizedBox(height: 80),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
@@ -339,123 +399,25 @@ class _AIHomePageState extends State<AIHomePage> {
     );
   }
 
-  Widget _buildRobotIcon(String filePath) {
-    try {
-      final file = File(filePath);
-      if (file.existsSync()) {
-        return Container(
-          margin: const EdgeInsets.only(left: 6),
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6),
-            ],
-          ),
-          child: ClipOval(
-            child: Image.file(
-              file,
-              fit: BoxFit.cover,
-              width: 36,
-              height: 36,
-              errorBuilder: (c, e, st) {
-                return const Icon(
-                  Icons.smart_toy,
-                  color: Colors.black54,
-                  size: 22,
-                );
-              },
+  Widget _buildQuickActionChip(String label, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 18),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
             ),
           ),
-        );
-      }
-    } catch (_) {}
-
-    return Container(
-      margin: const EdgeInsets.only(left: 6),
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6),
         ],
-      ),
-      child: const Icon(Icons.smart_toy, color: Colors.black54, size: 22),
-    );
-  }
-
-  Widget _buildWriteButton() {
-    return Container(
-      width: 130,
-      height: 64,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1162FF),
-        borderRadius: BorderRadius.circular(36),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blue.withOpacity(0.16),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: TextButton.icon(
-        onPressed: () {},
-        icon: const Icon(Icons.add, color: Colors.white, size: 20),
-        label: const Text(
-          'Жазу',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryChip(String label, IconData? icon) {
-    final bool isSelected = selectedCategory == label;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedCategory = label;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF0166FF) : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF0166FF) : Colors.grey.shade300,
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            if (icon != null) ...[
-              Icon(
-                icon,
-                color: isSelected ? Colors.white : Colors.grey[700],
-                size: 18,
-              ),
-              const SizedBox(width: 8),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? Colors.white : Colors.grey[700],
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -466,16 +428,19 @@ class _AIHomePageState extends State<AIHomePage> {
       children: [
         Text(
           title,
+
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: Colors.black,
           ),
+
         ),
-        const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+        const Icon(Icons.arrow_forward_ios, size: 16),
       ],
     );
   }
+
 
   Widget _buildHorizontalAIList(List<AIService> services) {
     return SizedBox(
@@ -491,13 +456,20 @@ class _AIHomePageState extends State<AIHomePage> {
             child: _buildAICard(services[index]),
           );
         },
+
       ),
+      itemCount: services.length,
+      itemBuilder: (context, index) {
+        return _buildAICard(context, services[index]);
+      },
     );
   }
 
-  Widget _buildAICard(AIService service) {
+  Widget _buildAICard(BuildContext context, AIService service) {
     return Container(
+
       width: 110,
+
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -519,19 +491,13 @@ class _AIHomePageState extends State<AIHomePage> {
             child: const Icon(Icons.smart_toy_outlined, color: Colors.grey),
           ),
           const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              service.name,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+
+          Text(
+            service.name,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            maxLines: 2,
+
           ),
           const SizedBox(height: 4),
           Padding(
@@ -544,38 +510,45 @@ class _AIHomePageState extends State<AIHomePage> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const Spacer(),
-          GestureDetector(
-            onTap: () => _handleAIServiceTap(service),
-            child: Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: const Color(0xFF0A73FF),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.add, color: Colors.white, size: 18),
+          const SizedBox(height: 8),
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: const Color(0xFF0A73FF),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => _openLoginPage(context),
+              icon: const Icon(Icons.add, color: Colors.white, size: 18),
             ),
           ),
-          const SizedBox(height: 8),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(
-    IconData icon,
-    String label,
-    bool isActive,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
+  void _openLoginPage(BuildContext context) {
+    Navigator.of(context).push(AuthPageRoute(child: const LoginPage()));
+  }
+
+  Widget _buildNavItem(IconData icon, String label, bool isActive) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          color: isActive ? const Color(0xFF0A73FF) : Colors.grey,
+          size: 26,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+
+
             color: isActive ? const Color(0xFF0A73FF) : Colors.grey,
             size: 26,
           ),

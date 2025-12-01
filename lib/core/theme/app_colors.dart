@@ -9,5 +9,9 @@ class AppColors {
   static const Color grey = Colors.grey;
   static const Color textPrimary = Color(0xFF212121);
   static const Color textSecondary = Color(0xFF757575);
+  static const Color modalBackground = Colors.white;
+  static const Color modalSurface = Color(0xFFF5F6FA);
+  static const Color modalDivider = Color(0xFFE5E5EA);
+  static const Color textOnDarkPrimary = Color(0xFF1C1C1E);
+  static const Color textOnDarkSecondary = Color(0xFF8E8E93);
 }
-
